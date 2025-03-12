@@ -1,6 +1,6 @@
 let board;
-let boardWidth = 360; // фиксированная ширина экрана
-let boardHeight = 640; // фиксированная высота экрана
+let boardWidth = window.innerWidth; // Ширина экрана
+let boardHeight = window.innerHeight; // Высота экрана
 let context;
 
 let birdWidth = 34; 
@@ -60,6 +60,16 @@ window.onload = function () {
     document.addEventListener("keydown", handleKeyDown);
 };
 
+// Обновим ширину и высоту канваса при изменении размера окна
+window.onresize = function () {
+    boardWidth = window.innerWidth;
+    boardHeight = window.innerHeight;
+    board.width = boardWidth;
+    board.height = boardHeight;
+    bird.x = (boardWidth - bird.width) / 2;
+    bird.y = boardHeight / 2;
+};
+
 function drawStartScreen() {
     context.clearRect(0, 0, board.width, board.height);
     context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
@@ -105,45 +115,56 @@ function update() {
         showGameOverScreen();
         return;
     }
-    
-    requestAnimationFrame(update);
-    context.clearRect(0, 0, board.width, board.height);
+
+    // Обновление состояния игры
     velocityY += gravity;
     bird.y = Math.max(bird.y + velocityY, 0);
-    context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
-
     if (bird.y > board.height) {
         gameOver = true;
     }
 
+    // Отрисовка обновлений
+    context.clearRect(0, 0, board.width, board.height);
+    context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
+
+    // Обработка труб
     for (let i = 0; i < pipeArray.length; i++) {
         let pipe = pipeArray[i];
         pipe.x += velocityX;
+
+        if (pipe.x + pipe.width < 0) {
+            pipeArray.shift();
+            continue;
+        }
+
         context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
 
+        // Проверка на столкновение
+        if (detectCollision(bird, pipe)) {
+            gameOver = true;
+        }
+
+        // Обновление счета
         if (!pipe.passed && bird.x > pipe.x + pipe.width) {
             score += 0.5;
             pipe.passed = true;
         }
-
-        if (detectCollision(bird, pipe)) {
-            gameOver = true;
-        }
     }
 
-    while (pipeArray.length > 0 && pipeArray[0].x < -pipeWidth) {
-        pipeArray.shift();
-    }
-
+    // Отображение счета
     if (!gameOver) {
         context.fillStyle = "white";
         context.font = "40px sans-serif";
         context.fillText(Math.floor(score), board.width / 2, 50);
     }
+
+    // Рекурсивный вызов для плавности
+    requestAnimationFrame(update);
 }
+
 function showGameOverScreen() {
     // Фон для экрана "Game Over" с закругленными углами
-    context.fillStyle = "rgba(255, 87, 34, 0.8)"; // Полупрозрачный оранжевый
+    context.fillStyle = "rgba(255, 87, 34, 0.8)";
     context.beginPath();
     context.moveTo(board.width / 3, board.height / 2 - 60);
     context.lineTo(board.width * 2 / 3, board.height / 2 - 60);
@@ -167,7 +188,6 @@ function showGameOverScreen() {
     // Кнопка перезапуска игры
     drawButton(board.width / 3, board.height / 2 + 100, "RESTART", restartGame);
 }
-
 
 function restartGame() {
     bird.y = birdY;

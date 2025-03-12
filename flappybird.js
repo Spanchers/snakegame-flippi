@@ -1,6 +1,6 @@
 let board;
-let boardWidth = 360; // фиксированная ширина
-let boardHeight = 640; // фиксированная высота
+let boardWidth = 360; // фиксированная ширина экрана
+let boardHeight = 640; // фиксированная высота экрана
 let context;
 
 let birdWidth = 34; 
@@ -34,16 +34,18 @@ let gameOver = false;
 let score = 0;
 
 window.onload = function () {
+    // Инициализируем канвас
     board = document.getElementById("board");
     board.height = boardHeight;
     board.width = boardWidth;
     context = board.getContext("2d");
 
+    // Загружаем изображения
     birdImg = new Image();
     birdImg.src = "./flappybird.png";
     birdImg.onload = function () {
         drawStartScreen();
-    }
+    };
 
     topPipeImg = new Image();
     topPipeImg.src = "./toppipe.png";
@@ -51,10 +53,10 @@ window.onload = function () {
     bottomPipeImg = new Image();
     bottomPipeImg.src = "./bottompipe.png";
 
-    // Добавление обработчика для мобильных устройств (касание экрана)
+    // Обработчик событий для мобильных устройств (касания)
     board.addEventListener("touchstart", handleTouchStart);
 
-    // Обработчик для клавиатуры на ПК
+    // Обработчик клавиатуры для ПК
     document.addEventListener("keydown", handleKeyDown);
 };
 
@@ -202,7 +204,7 @@ function handleKeyDown(e) {
     }
 }
 
-// Обработчик для касания экрана на мобильных устройствах
+// Обработчик касания экрана
 function handleTouchStart(e) {
     e.preventDefault(); // предотвращаем стандартное поведение
     if (!gameStarted) {

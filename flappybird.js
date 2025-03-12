@@ -1,6 +1,6 @@
 let board;
-let boardWidth = 360;
-let boardHeight = 640;
+let boardWidth = 360; // фиксированная ширина
+let boardHeight = 640; // фиксированная высота
 let context;
 
 let birdWidth = 34; 
@@ -51,8 +51,11 @@ window.onload = function () {
     bottomPipeImg = new Image();
     bottomPipeImg.src = "./bottompipe.png";
 
+    // Добавление обработчика для мобильных устройств (касание экрана)
+    board.addEventListener("touchstart", handleTouchStart);
+
+    // Обработчик для клавиатуры на ПК
     document.addEventListener("keydown", handleKeyDown);
-    document.addEventListener("touchstart", handleTouch);
 };
 
 function drawStartScreen() {
@@ -199,7 +202,9 @@ function handleKeyDown(e) {
     }
 }
 
-function handleTouch() {
+// Обработчик для касания экрана на мобильных устройствах
+function handleTouchStart(e) {
+    e.preventDefault(); // предотвращаем стандартное поведение
     if (!gameStarted) {
         startGame();
     }

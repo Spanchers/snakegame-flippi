@@ -52,6 +52,7 @@ window.onload = function () {
     bottomPipeImg.src = "./bottompipe.png";
 
     document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("touchstart", handleTouch);
 };
 
 function drawStartScreen() {
@@ -195,6 +196,16 @@ function handleKeyDown(e) {
         if (gameOver) {
             restartGame();
         }
+    }
+}
+
+function handleTouch() {
+    if (!gameStarted) {
+        startGame();
+    }
+    velocityY = -6;
+    if (gameOver) {
+        restartGame();
     }
 }
 

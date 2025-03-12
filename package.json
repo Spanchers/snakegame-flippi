@@ -1,5 +1,0 @@
-"homepage": "https://spanchers.github.io/snakegame-flippi/",
-"scripts": {
-  "predeploy": "npm run build",
-  "deploy": "gh-pages -d dist"
-}

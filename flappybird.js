@@ -79,7 +79,7 @@ function drawStartScreen() {
     context.textAlign = "center";
     context.fillText("Flappy Bird", board.width / 2, board.height / 3);
     
-    drawButton(board.width / 3, board.height / 2.8, "START", startGame);
+    drawButton(board.width / 3, board.height / 2.8 + 10, "START", startGame);
 }
 
 function drawButton(x, y, text, onClick) {

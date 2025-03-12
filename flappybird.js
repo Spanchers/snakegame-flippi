@@ -143,15 +143,30 @@ function update() {
 }
 
 function showGameOverScreen() {
-    context.fillStyle = "orange";
+    // Фон для экрана "Game Over" с закругленными углами
+    context.fillStyle = "rgba(255, 87, 34, 0.8)"; // Полупрозрачный оранжевый
+    context.beginPath();
+    context.moveTo(board.width / 3, board.height / 2 - 60);
+    context.lineTo(board.width * 2 / 3, board.height / 2 - 60);
+    context.arcTo(board.width * 2 / 3 + 20, board.height / 2 - 60, board.width * 2 / 3 + 20, board.height / 2 + 60, 20);
+    context.lineTo(board.width * 2 / 3 + 20, board.height / 2 + 60);
+    context.arcTo(board.width / 3 - 20, board.height / 2 + 60, board.width / 3 - 20, board.height / 2 - 60, 20);
+    context.lineTo(board.width / 3 - 20, board.height / 2 - 60);
+    context.arcTo(board.width / 3 - 20, board.height / 2 - 60, board.width / 3 - 20, board.height / 2 + 60, 20);
+    context.fill();
+
+    // Текст "GAME OVER"
+    context.fillStyle = "white";
     context.font = "bold 50px sans-serif";
     context.textAlign = "center";
     context.fillText("GAME OVER", board.width / 2, board.height / 2);
-    
+
+    // Текст с результатом
     context.font = "bold 30px sans-serif";
-    context.fillText(Math.floor(score), board.width / 2, board.height / 2 + 50);
-    
-    drawButton(board.width / 3, board.height / 2 + 80, "RESTART", restartGame);
+    context.fillText("Score: " + Math.floor(score), board.width / 2, board.height / 2 + 50);
+
+    // Кнопка перезапуска игры
+    drawButton(board.width / 3, board.height / 2 + 100, "RESTART", restartGame);
 }
 
 function restartGame() {

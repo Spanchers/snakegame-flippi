@@ -151,8 +151,12 @@ function update() {
         if (!pipe.passed && bird.x > pipe.x + pipe.width) {
             score += 0.5;
             pipe.passed = true;
-            pointSound.play();
+            
+            setTimeout(() => {
+                pointSound.play();
+            }, 200);
         }
+        
     }
     
     if (!gameOver) {

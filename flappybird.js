@@ -110,55 +110,59 @@ function startGame() {
     }
 }
 
+let deathSound = new Audio("./sfx_die.wav");
+let pointSound = new Audio("./sfx_point.wav");
+let jumpSound = new Audio("./sfx_wing.wav");
+
 function update() {
     if (gameOver) {
+        if (!deathSoundPlayed) {
+            deathSound.play();
+            deathSoundPlayed = true;
+        }
         showGameOverScreen();
         return;
     }
-
-    // Обновление состояния игры
+    
     velocityY += gravity;
     bird.y = Math.max(bird.y + velocityY, 0);
     if (bird.y > board.height) {
         gameOver = true;
+        deathSound.play();
     }
-
-    // Отрисовка обновлений
+    
     context.clearRect(0, 0, board.width, board.height);
     context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
-
-    // Обработка труб
+    
     for (let i = 0; i < pipeArray.length; i++) {
         let pipe = pipeArray[i];
         pipe.x += velocityX;
-
+        
         if (pipe.x + pipe.width < 0) {
             pipeArray.shift();
             continue;
         }
-
+        
         context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
-
-        // Проверка на столкновение
+        
         if (detectCollision(bird, pipe)) {
             gameOver = true;
+            deathSound.play();
         }
-
-        // Обновление счета
+        
         if (!pipe.passed && bird.x > pipe.x + pipe.width) {
             score += 0.5;
             pipe.passed = true;
+            pointSound.play();
         }
     }
-
-    // Отображение счета
+    
     if (!gameOver) {
         context.fillStyle = "white";
         context.font = "40px sans-serif";
         context.fillText(Math.floor(score), board.width / 2, 50);
     }
-
-    // Рекурсивный вызов для плавности
+    
     requestAnimationFrame(update);
 }
 
@@ -195,6 +199,7 @@ function restartGame() {
     score = 0;
     gameOver = false;
     gameStarted = true;
+    deathSoundPlayed = false;
     requestAnimationFrame(update);
 }
 
@@ -233,15 +238,15 @@ function handleKeyDown(e) {
             startGame();
         }
         velocityY = -6;
+        jumpSound.play();
         if (gameOver) {
             restartGame();
         }
     }
 }
-
 // Обработчик касания экрана
 function handleTouchStart(e) {
-    e.preventDefault(); // предотвращаем стандартное поведение
+    e.preventDefault();
     if (!gameStarted) {
         startGame();
     }

@@ -1,9 +1,9 @@
 let board;
-let boardWidth = window.innerWidth;
-let boardHeight = window.innerHeight;
+let boardWidth = window.innerWidth; 
+let boardHeight = window.innerHeight; 
 let context;
 
-let birdWidth = 34;
+let birdWidth = 34; 
 let birdHeight = 24;
 let birdX = (boardWidth - birdWidth) / 2;
 let birdY = boardHeight / 2;
@@ -18,7 +18,7 @@ let bird = {
 };
 
 let pipeArray = [];
-let pipeWidth = 64;
+let pipeWidth = 64; 
 let pipeHeight = 512;
 let pipeX = boardWidth;
 let pipeY = 0;
@@ -51,10 +51,13 @@ window.onload = function () {
     bottomPipeImg = new Image();
     bottomPipeImg.src = "./bottompipe.png";
 
+
     board.addEventListener("touchstart", handleTouchStart);
 
+ 
     document.addEventListener("keydown", handleKeyDown);
 };
+
 
 window.onresize = function () {
     boardWidth = window.innerWidth;
@@ -101,6 +104,7 @@ function startGame() {
     if (!gameStarted) {
         gameStarted = true;
         requestAnimationFrame(update);
+        setInterval(placePipes, 1500);
     }
 }
 
@@ -200,6 +204,10 @@ function restartGame() {
 }
 
 function placePipes() {
+    if (gameOver) {
+        return;
+    }
+
     let randomPipeY = pipeY - pipeHeight / 4 - Math.random() * (pipeHeight / 2);
     let openingSpace = board.height / 4;
 

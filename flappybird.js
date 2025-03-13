@@ -110,6 +110,10 @@ let jumpSound = new Audio("./sfx_wing.wav");
 
 function update() {
     if (gameOver) {
+        if (!deathSoundPlayed) {
+            deathSound.play();
+            deathSoundPlayed = true;
+        }
         showGameOverScreen();
         return;
     }
@@ -124,24 +128,30 @@ function update() {
     context.clearRect(0, 0, board.width, board.height);
     context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
 
-    // Используем более эффективный способ для прокачки труб
+    // Массив для удаления труб
     let pipesToRemove = [];
+
+    // Рендерим только видимые трубы
     for (let i = 0; i < pipeArray.length; i++) {
         let pipe = pipeArray[i];
         pipe.x += velocityX;
-        
+
+        // Если труба ушла за пределы экрана, помечаем на удаление
         if (pipe.x + pipe.width < 0) {
-            pipesToRemove.push(i); // Мечаем трубки для удаления
+            pipesToRemove.push(i);
             continue;
         }
 
+        // Прорисовываем трубу, если она видна
         context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
 
+        // Проверка на коллизию
         if (detectCollision(bird, pipe)) {
             gameOver = true;
             deathSound.play();
         }
 
+        // Подсчёт очков
         if (!pipe.passed && bird.x > pipe.x + pipe.width) {
             score += 0.5;
             pipe.passed = true;
@@ -152,11 +162,12 @@ function update() {
         }
     }
 
-    // Удаляем трубки, которые прошли за пределы экрана
+    // Удаляем трубы, которые больше не видны
     for (let i = pipesToRemove.length - 1; i >= 0; i--) {
         pipeArray.splice(pipesToRemove[i], 1);
     }
 
+    // Выводим счёт
     if (!gameOver) {
         context.fillStyle = "white";
         context.font = "40px sans-serif";
@@ -165,6 +176,7 @@ function update() {
 
     requestAnimationFrame(update);
 }
+
 
 function showGameOverScreen() {
     context.fillStyle = "rgba(255, 87, 34, 0.8)";

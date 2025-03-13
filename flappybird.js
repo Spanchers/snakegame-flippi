@@ -211,38 +211,41 @@ function restartGame() {
     requestAnimationFrame(update);
 }
 
-function placePipes() {
+let lastPipeTime = 0;
+const pipeInterval = 1500; // Интервал появления труб
+
+function placePipes(timestamp) {
     if (gameOver) {
         return;
     }
 
+    if (timestamp - lastPipeTime < pipeInterval) return;
+    lastPipeTime = timestamp;
+
     let randomPipeY = pipeY - pipeHeight / 4 - Math.random() * (pipeHeight / 2);
     let openingSpace = board.height / 4;
 
-    // Ограничиваем количество труб на экране
-    if (pipeArray.length < 4) {
-        let topPipe = {
-            img: topPipeImg,
-            x: pipeX,
-            y: randomPipeY,
-            width: pipeWidth,
-            height: pipeHeight,
-            passed: false
-        };
-        pipeArray.push(topPipe);
+    // Создаем трубы
+    let topPipe = {
+        img: topPipeImg,
+        x: pipeX,
+        y: randomPipeY,
+        width: pipeWidth,
+        height: pipeHeight,
+        passed: false
+    };
+    pipeArray.push(topPipe);
 
-        let bottomPipe = {
-            img: bottomPipeImg,
-            x: pipeX,
-            y: randomPipeY + pipeHeight + openingSpace,
-            width: pipeWidth,
-            height: pipeHeight,
-            passed: false
-        };
-        pipeArray.push(bottomPipe);
-    }
+    let bottomPipe = {
+        img: bottomPipeImg,
+        x: pipeX,
+        y: randomPipeY + pipeHeight + openingSpace,
+        width: pipeWidth,
+        height: pipeHeight,
+        passed: false
+    };
+    pipeArray.push(bottomPipe);
 }
-
 
 function handleKeyDown(e) {
     if (e.code == "Space" || e.code == "ArrowUp" || e.code == "KeyX") {

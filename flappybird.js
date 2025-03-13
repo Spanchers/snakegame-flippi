@@ -1,9 +1,9 @@
 let board;
-let boardWidth = window.innerWidth; 
-let boardHeight = window.innerHeight; 
+let boardWidth = window.innerWidth;
+let boardHeight = window.innerHeight;
 let context;
 
-let birdWidth = 34; 
+let birdWidth = 34;
 let birdHeight = 24;
 let birdX = (boardWidth - birdWidth) / 2;
 let birdY = boardHeight / 2;
@@ -18,7 +18,7 @@ let bird = {
 };
 
 let pipeArray = [];
-let pipeWidth = 64; 
+let pipeWidth = 64;
 let pipeHeight = 512;
 let pipeX = boardWidth;
 let pipeY = 0;
@@ -51,13 +51,9 @@ window.onload = function () {
     bottomPipeImg = new Image();
     bottomPipeImg.src = "./bottompipe.png";
 
-
     board.addEventListener("touchstart", handleTouchStart);
-
- 
     document.addEventListener("keydown", handleKeyDown);
 };
-
 
 window.onresize = function () {
     boardWidth = window.innerWidth;
@@ -76,7 +72,7 @@ function drawStartScreen() {
     context.font = "bold 30px sans-serif";
     context.textAlign = "center";
     context.fillText("Flappy Bird", board.width / 2, board.height / 3);
-    
+
     drawButton(board.width / 3, board.height / 2.8 + 10, "START", startGame);
 }
 
@@ -114,62 +110,63 @@ let jumpSound = new Audio("./sfx_wing.wav");
 
 function update() {
     if (gameOver) {
-        if (!deathSoundPlayed) {
-            deathSound.play();
-            deathSoundPlayed = true;
-        }
         showGameOverScreen();
         return;
     }
-    
+
     velocityY += gravity;
     bird.y = Math.max(bird.y + velocityY, 0);
     if (bird.y > board.height) {
         gameOver = true;
         deathSound.play();
     }
-    
+
     context.clearRect(0, 0, board.width, board.height);
     context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
-    
+
+    // Используем более эффективный способ для прокачки труб
+    let pipesToRemove = [];
     for (let i = 0; i < pipeArray.length; i++) {
         let pipe = pipeArray[i];
         pipe.x += velocityX;
         
         if (pipe.x + pipe.width < 0) {
-            pipeArray.shift();
+            pipesToRemove.push(i); // Мечаем трубки для удаления
             continue;
         }
-        
+
         context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
-        
+
         if (detectCollision(bird, pipe)) {
             gameOver = true;
             deathSound.play();
         }
-        
+
         if (!pipe.passed && bird.x > pipe.x + pipe.width) {
             score += 0.5;
             pipe.passed = true;
-            
+
             setTimeout(() => {
                 pointSound.play();
             }, 300);
         }
-        
     }
-    
+
+    // Удаляем трубки, которые прошли за пределы экрана
+    for (let i = pipesToRemove.length - 1; i >= 0; i--) {
+        pipeArray.splice(pipesToRemove[i], 1);
+    }
+
     if (!gameOver) {
         context.fillStyle = "white";
         context.font = "40px sans-serif";
         context.fillText(Math.floor(score), board.width / 2, 50);
     }
-    
+
     requestAnimationFrame(update);
 }
 
 function showGameOverScreen() {
-
     context.fillStyle = "rgba(255, 87, 34, 0.8)";
     context.beginPath();
     context.moveTo(board.width / 3, board.height / 2 - 60);
@@ -186,7 +183,6 @@ function showGameOverScreen() {
     context.textAlign = "center";
     context.fillText("GAME OVER", board.width / 2, board.height / 2);
 
-    
     context.font = "bold 30px sans-serif";
     context.fillText("Score: " + Math.floor(score), board.width / 2, board.height / 2 + 50);
 

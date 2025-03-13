@@ -121,52 +121,51 @@ function update() {
         showGameOverScreen();
         return;
     }
-    
+
     velocityY += gravity;
     bird.y = Math.max(bird.y + velocityY, 0);
     if (bird.y > board.height) {
         gameOver = true;
         deathSound.play();
     }
-    
+
     context.clearRect(0, 0, board.width, board.height);
     context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
-    
+
     for (let i = 0; i < pipeArray.length; i++) {
         let pipe = pipeArray[i];
         pipe.x += velocityX;
-        
+
         if (pipe.x + pipe.width < 0) {
             pipeArray.shift();
             continue;
         }
-        
+
         context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
-        
+
+        if (!pipe.passed && bird.x > pipe.x + pipe.width) {
+            score += 0.5;
+            pipe.passed = true;
+            setTimeout(() => {
+                pointSound.play();
+            }, 300);
+        }
+
         if (detectCollision(bird, pipe)) {
             gameOver = true;
             deathSound.play();
         }
-        
-        if (!pipe.passed && bird.x > pipe.x + pipe.width) {
-            score += 0.5;
-            pipe.passed = true;
-            
-            setTimeout(() => {
-                pointSound.play();
-            }, 200);
-        }
-        
     }
-    
+
     if (!gameOver) {
         context.fillStyle = "white";
         context.font = "40px sans-serif";
         context.fillText(Math.floor(score), board.width / 2, 50);
     }
-    
+
     requestAnimationFrame(update);
 }
+
 
 function showGameOverScreen() {
 

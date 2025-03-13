@@ -158,7 +158,7 @@ function update() {
 
             setTimeout(() => {
                 pointSound.play();
-            }, 300);
+            }, 200);
         }
     }
 
@@ -272,6 +272,10 @@ function handleTouchStart(e) {
 }
 
 function detectCollision(a, b) {
+    if (b.x + b.width < 0 || b.x > board.width) {
+        return false; // 
+    }
+
     return a.x < b.x + b.width &&
            a.x + a.width > b.x &&
            a.y < b.y + b.height &&

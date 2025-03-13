@@ -40,7 +40,7 @@ window.onload = function () {
     context = board.getContext("2d");
 
     birdImg = new Image();
-    birdImg.src = "./flappybird.png";
+    birdImg.src = "./flappybird.gif";
     birdImg.onload = function () {
         drawStartScreen();
     };
@@ -109,7 +109,7 @@ function startGame() {
 }
 
 let deathSound = new Audio("./sfx_die.wav");
-let pointSound = new Audio("./sfx_point.wav");
+let pointSound = new Audio("./sfxs_point.wav");
 let jumpSound = new Audio("./sfx_wing.wav");
 
 function update() {

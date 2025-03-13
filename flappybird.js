@@ -40,7 +40,7 @@ window.onload = function () {
     context = board.getContext("2d");
 
     birdImg = new Image();
-    birdImg.src = "./flappybird.gif";
+    birdImg.src = "./flappybird.png";
     birdImg.onload = function () {
         drawStartScreen();
     };

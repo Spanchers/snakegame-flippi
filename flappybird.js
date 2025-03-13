@@ -1,6 +1,6 @@
 let board;
-let boardWidth = window.innerWidth; // Ширина экрана
-let boardHeight = window.innerHeight; // Высота экрана
+let boardWidth = window.innerWidth; 
+let boardHeight = window.innerHeight; 
 let context;
 
 let birdWidth = 34; 
@@ -34,15 +34,13 @@ let gameOver = false;
 let score = 0;
 
 window.onload = function () {
-    // Инициализируем канвас
     board = document.getElementById("board");
     board.height = boardHeight;
     board.width = boardWidth;
     context = board.getContext("2d");
 
-    // Загружаем изображения
     birdImg = new Image();
-    birdImg.src = "./flappybird.png";
+    birdImg.src = "./flappybird.gif";
     birdImg.onload = function () {
         drawStartScreen();
     };
@@ -53,14 +51,14 @@ window.onload = function () {
     bottomPipeImg = new Image();
     bottomPipeImg.src = "./bottompipe.png";
 
-    // Обработчик событий для мобильных устройств (касания)
+
     board.addEventListener("touchstart", handleTouchStart);
 
-    // Обработчик клавиатуры для ПК
+ 
     document.addEventListener("keydown", handleKeyDown);
 };
 
-// Обновим ширину и высоту канваса при изменении размера окна
+
 window.onresize = function () {
     boardWidth = window.innerWidth;
     boardHeight = window.innerHeight;
@@ -167,7 +165,7 @@ function update() {
 }
 
 function showGameOverScreen() {
-    // Фон для экрана "Game Over" с закругленными углами
+
     context.fillStyle = "rgba(255, 87, 34, 0.8)";
     context.beginPath();
     context.moveTo(board.width / 3, board.height / 2 - 60);
@@ -179,17 +177,15 @@ function showGameOverScreen() {
     context.arcTo(board.width / 3 - 20, board.height / 2 - 60, board.width / 3 - 20, board.height / 2 + 60, 20);
     context.fill();
 
-    // Текст "GAME OVER"
     context.fillStyle = "white";
     context.font = "bold 50px sans-serif";
     context.textAlign = "center";
     context.fillText("GAME OVER", board.width / 2, board.height / 2);
 
-    // Текст с результатом
+    
     context.font = "bold 30px sans-serif";
     context.fillText("Score: " + Math.floor(score), board.width / 2, board.height / 2 + 50);
 
-    // Кнопка перезапуска игры
     drawButton(board.width / 3, board.height / 2 + 100, "RESTART", restartGame);
 }
 
@@ -244,7 +240,7 @@ function handleKeyDown(e) {
         }
     }
 }
-// Обработчик касания экрана
+
 function handleTouchStart(e) {
     e.preventDefault();
     if (!gameStarted) {
